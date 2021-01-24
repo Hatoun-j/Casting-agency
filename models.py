@@ -6,7 +6,7 @@ from sqlalchemy import Column, String, Integer, Date
 from flask_migrate import Migrate
 from sqlalchemy.orm import backref
 
-database_path = 'postgresql://hatounaljamhoor@localhost:5432/castingAgency'
+database_path = os.environ.get('DATABASE_URL')
 
 db = SQLAlchemy()
 
