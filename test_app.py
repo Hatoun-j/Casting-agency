@@ -50,7 +50,7 @@ class CastingAgencyTestCase(unittest.TestCase):
     def test_get_movies_success(self):
         """ Test get movies success """
 #Add a new movie 
-        movie = Movie( title='Modren family', release_date="Mon, 23 Jan 2013 12:00:00 GMT")
+        movie = Movie( title='Instant family', release_date="Mon, 23 Jan 2018 12:00:00 GMT")
         movie.insert()
 
         # get response data + adding headers
@@ -74,7 +74,7 @@ class CastingAgencyTestCase(unittest.TestCase):
     def test_get_actors_success(self):
         """ Test get actors success """
 #Add a new actor 
-        actor= Actor( name='Hatounnnn', age=23, gender='female')
+        actor= Actor( name='Jamie Foxx', age=53, gender='male')
         actor.insert()
 
         # get response data + adding headers
@@ -116,7 +116,14 @@ class CastingAgencyTestCase(unittest.TestCase):
                                         headers=self.casting_assistant)
 
         # check success value, status_code
-        self.assertEqual(response.status_code, 401)
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(data['error'])
+        self.assertEqual(data['message'], 'Bad Request, please check your inputs')
+        self.assertEqual(data['success'], False)
+
+
 
 # ONE Success for DELETE movie end point
     def test_delete_movie_success(self):
@@ -165,7 +172,7 @@ class CastingAgencyTestCase(unittest.TestCase):
 
 # ONE Success for ADD Actor end point
     def test_create_new_actor_success(self):
-        """ Test create a actor obj success """
+        """ Test create a actor  success """
         # get the number of actors before adding actor
         actors_total_before = len(Actor.query.all())
 
@@ -187,29 +194,30 @@ class CastingAgencyTestCase(unittest.TestCase):
         self.assertTrue(actors_total_before < actors_total_after)
 # One test for error behavior of Add Actor
     def test_create_actor_failure(self):
-        """ Test create actor obj failure """
-        # get the number of actors after creating a new obj
+        """ Test create actor  failure """
+        # get the number of actors after creating a new actor
         actors_total_before = len(Actor.query.all())
 
         # load response data
         response = self.client().post('/actors', json={},
                                       headers=self.casting_director)
 
-        # get the number of actors after creating a new obj
+        # get the number of actors after creating a new actor
         actors_total_after = len(Actor.query.all())
 
         # 422 since not data was provided in the request
         self.assertEqual(response.status_code, 422)
-        # as no obj was created the actors_total_before
+        # as no actor was created the actors_total_before
         # should be equal to actors_total_after
         self.assertTrue(actors_total_before == actors_total_after)
+
 # ONE Success for ADD Movie end point
     def test_create_movie_success(self):
-        """ Test create a movie obj success """
-        # get the number of movies before creating a new obj
+        """ Test create a movie success """
+        # get the number of movies before creating a new movie
         movies_total_before = len(Movie.query.all())
 
-        # create a new obj
+        # create a new movie
         movie_test = Movie(
             title='Soul',
             release_date="mon, 23 Jan 2013 12:00:00 GMT")
@@ -218,7 +226,7 @@ class CastingAgencyTestCase(unittest.TestCase):
         response = self.client().post('/movies', json=movie_test.format(),
                                       headers=self.executive_producer)
 
-        # get the number of movies after creating a new obj
+        # get the number of movies after creating a new movie
         movies_total_after = len(Movie.query.all())
 
         # status_code
@@ -230,19 +238,19 @@ class CastingAgencyTestCase(unittest.TestCase):
 
 # One test for error behavior of Add Movie
     def test_create_movies_failure(self):
-        """ Test create movie obj failure """
-        # get the number of actors after creating a new obj
+        """ Test create movie failure """
+        # get the number of actors after creating a new movie
         movies_total_before = len(Movie.query.all())
 
         # load response data
         response = self.client().post('/movies', json={},
                                       headers=self.executive_producer)
 
-        # get the number of movies after creating a new obj
+        # get the number of movies after creating a new movie
         movies_total_after = len(Movie.query.all())
 
         self.assertEqual(response.status_code, 400)
-        # as no obj was created the movies_total_before should
+        # as no movie was created the movies_total_before should
         # be equal to movies_total_after
         self.assertTrue(movies_total_before == movies_total_after)
 

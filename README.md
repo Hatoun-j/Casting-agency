@@ -8,7 +8,7 @@ Casting agncy final project for udacity aims to collect data of actors and movie
 
 ### URLs
 Locally: http://127.0.0.1:5000/
-Heroku: https://casting-agency-reema-ah.herokuapp.com/
+Heroku: https://casting---agency.herokuapp.com
 
 ### Installing Dependencies
 
@@ -23,7 +23,12 @@ Create Virtual Env by running:
 virtualenv --python=python3.7 venv
 
 ```
+#### Activate Virtual Enviornment
 
+```bash
+source  venv/bin/activate
+
+```
 #### PIP Dependencies
 
 install dependencies by running:
@@ -44,9 +49,7 @@ This will install all of the required packages we selected within the `requireme
 
 ## Running the server
 
-From within the `./starter` directory first ensure you are working using your created virtual environment.
-
-Each time you open a new terminal session, run:
+first you have to export the flask app, run:
 
 ```bash
 export FLASK_APP=app.py;
@@ -92,130 +95,222 @@ The `--reload` flag will detect file changes and restart the server automaticall
 
 
 ## Endpoints
-
-### GET '/actors'
-* Genreal
-    * Fetches a dictionary of actors
-    * Request Arguments: None
-    * Returns: An object that contains actors array, and a success boolean value.
-* Sample: `curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/actors`
-
 ```
+# Movies
+
+GET '/movies'
+POST '/movies'
+PATCH '/movies/<id>'
+DELETE '/movies/<id>'
+
+GET '/movies'
+- Fetches all movies on the platform
+- Request Arguments: None
+- Allowed users: Executive Producer, Casting Assistant and casting Director
+- Required permission (get:movies)
+- Response
 {
-    "actors":[
-        {"age":51,"gender":"Female","id":1,"name":"Jennifer aniston"},
-        {"age":52,"gender":"Male","id":2,"name":"Will smith"},
-        {"age":46,"gender":"Male","id":3,"name":"Leonardo dicaprio"},
-        {"age":57,"gender":"Male","id":4,"name":"Brad pitt"},
-        {"age":64,"gender":"Male","id":5,"name":"Tom hanks"}],
-    "success":true
+  "movies": [
+    {
+      "id": 88,
+      "release_date": "Sun, 23 Jun 2018 00:00:00 GMT",
+      "title": "Instant Family"
+    },
+    {
+      "id": 89,
+      "release_date": "Mon, 28 Jun 2020 00:00:00 GMT",
+      "title": "soul"
+    }
+  ],
+  "success": True
 }
-```
 
-### GET '/movies'
-* Genreal
-    * Fetches a dictionary of movies
-    * Request Arguments: None
-    * Returns: movies array and success boolean value.
-* Sample: `curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/movies`
-
-```
-{
-    "movies":[
-        {"id":1,"release_date":"Wed, 01 Jan 2020 00:00:00 GMT","title":"Mulan"},
-        {"id":2,"release_date":"Wed, 01 Jan 2020 00:00:00 GMT","title":"The Midnight Sky"},
-        {"id":3,"release_date":"Fri, 01 Jan 2010 00:00:00 GMT","title":"Inception"},
-        {"id":4,"release_date":"Wed, 01 Jan 2020 00:00:00 GMT","title":"Tenet"},
-        {"id":5,"release_date":"Tue, 01 Jan 2019 00:00:00 GMT","title":"Joker"}],
-    "success":true
+POST '/movies'
+- Creates a new movie with the provided parameters
+- Request Arguments: None
+- Allowed users: Executive Producer
+- Required permission (add:movies)
+- Request Body: {
+	"title": "Slap of the Century"
+	"release_date": "2/26/1996"
 }
-```
 
-### DELETE '/actors/1'
-* Genreal
-    * Removes the specified actor
-    * Request Arguments: The actor's ID
-    * Returns: An object than contains a success boolean value and the ID of the deleted actor.
-* Sample: `curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/actors/1`
-```
+- Response
 {
-  "deleted": 1,
+  "movie": {
+    "id": 4,
+    "release_date": "Mon, 26 Feb 1996 00:00:00 GMT",
+    "title": "Slap of the Century"
+  },
   "success": true
 }
-```
 
-### DELETE '/movies/1'
-* Genreal
-    * Removes the specified movie
-    * Request Arguments: The movie's ID
-    * Returns: An object than contains a success boolean value and the ID of the deleted movie.
-* Sample: `curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/movies/1`
-```
+
+PATCH '/movies/<id>'
+- Updates a specific movie with the provided parameters
+- Request Arguments: movie_id (The ID of the movie to update)
+- Allowed users: Executive Producer, Casting Director
+- Required permission (edit:movies)
+- Request Body: {
+	"title": "Silicon Valley"
+}
+
+- Response
 {
-  "deleted": 1,
+  "movie": {
+    "id": 4,
+    "release_date": "Thu, 26 Feb 2004 00:00:00 GMT",
+    "title": "Silicon Valley"
+  },
   "success": true
 }
-```
 
-### POST '/actors'
-* General
-    * Creates a new actor
-    * Request Arguments: None
-    * Returns: An object that contains a success boolean value and the created actor.
-* Sample: ` curl http://127.0.0.1:5000/actors -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d "{\"name\":\"Brad pitt\",\"age\":\"57\",\"gender\":\"Male\"}" `
-```
+DELETE '/movies/<id>'
+- Deletes a specific movie
+- Request Arguments: movie_id (The ID of the movie to delete)
+- Allowed users: Executive Producer
+- Required permission (delete:movie)
+- Response
 {
-    "created":4,
-    "success":true
+  "delete": id,
+  "success": true
 }
-```
-
-### POST '/movies'
-* General
-    * Creates a new movie
-    * Request Arguments: None
-    * Returns: An object that contains a success boolean value and the created movie.
-* Sample: ` curl http://127.0.0.1:5000/movies -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d "{\"title\":\"Mulan\",\"release_date\":\"2020-01-01\"}" `
-
-```
-{ 
-    "created":1,
-    "success":true
-}
-```
 
 
-### PATCH '/actors/1'
-* General
-    * Updates the specified actor
-    * Request Arguments: None
-    * Returns: An object that contains a success boolean value and the updated actor.
-* Sample: ` curl http://127.0.0.1:5000/actors/1 -X PATCH -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d "{\"name\":\"Angelina jolie\"}" `
-```
+
+# Actors
+
+GET '/actors'
+POST '/actors'
+PATCH '/actors/<id>'
+DELETE '/actors/<id>'
+
+GET '/actors'
+- Fetches all actors on the platform
+- Request Arguments: None
+- Allowed users: Executive Producer, Casting Assistant and casting Director
+- Required permission (get:actors)
+- Response
 {
-    "actor":{
-        "age":45,
-        "gender":
-        "Female",
-        "id":1,"
-        name":"Angelina jolie"
+  "actors": [
+    {
+      "age": 53,
+      "gender": "male",
+      "id": 3,
+      "name": "Jamie Foxx"
     },
-    "success":true}
-```
-
-### PATCH '/movies/1'
-* General
-    * Updates the specified movie
-    * Request Arguments: None
-    * Returns: An object that contains a success boolean value and the updated movie.
-* Sample: ` curl http://127.0.0.1:5000/movies/1 -X PATCH -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d "{\"title\":\"Home Alone\"}" `
-```
-{
-    "movie":{
-        "id":1,
-        "release_date":"Thu, 01 Apr 1990 00:00:00 GMT",
-        "title":"Home Alone"
-    },
-    "success":true
+    {
+      "age": 40,
+      "gender": "female",
+      "id": 1,
+      "name": "Rose Byrne"
+    }
+  ],
+  "success": true
 }
+
+POST '/actors'
+- Creates a new actor with the provided parameters
+- Request Arguments: None
+- Allowed users: Executive Producer and casting Director
+- Required permission (add:actors)
+- Request Body: {
+	"name": "Mark Wahlberg",
+	"age": 48,
+	"gender": "male"
+}
+
+- Response
+{
+  "actor": {
+    "age": 48,
+    "gender": "male",
+    "id": 87,
+    "name": "Mark Wahlberg"
+  },
+  "success": true
+}
+
+
+PATCH '/actors/<id>'
+- Updates a specific actor with the provided parameters
+- Request Arguments: actor_id (The ID of the actor to update)
+- Allowed users: Executive Producer and Casting Director
+- Required permission (edit:actor)
+- Request Body: {
+	"name": "name1",
+}
+
+- Response
+{
+  "actor": {
+    "age": 48,
+    "gender": "male",
+    "id": 87,
+    "name": "name1"
+  },
+  "success": true
+}
+
+DELETE '/actors/<id>'
+- Deletes a specific actor
+- Request Arguments: actor_id (The ID of the actor to delete)
+- Required permission (delete:actors)
+- Response
+{
+  "delete": id,
+  "success": true
+}
+
+Errors 
+For errors, the server returns a json object with a description of the type of error. Find the description below:
+
+400 (Bad Request)
+  {
+    "success": False, 
+    "error": 400,
+    "message": "bad request, please check your input"
+  }
+
+401 (Unauthorised)
+  {
+    "success": False, 
+    "error": 401,
+    "message": "authorisation error"
+  }
+
+403 (Forbiddden request)
+  {
+    "success": False, 
+    "error": 403,
+    "message": "You are not allowed to access this resource"
+  }
+
+404 (Resource Not Found)
+  {
+    "success": False, 
+    "error": 404,
+    "message": "resource not found"
+  }
+
+405 (Method not allowed)
+  {
+    "success": False, 
+    "error": 405,
+    "message": "Method not allowed"
+  }
+
+422 (Unprocessable entity)
+  {
+    "success": False, 
+    "error": 422,
+    "message": "unprocessable"
+  }
+
+500 (Internal server error)
+  {
+    "success": False, 
+    "error": 500,
+    "message": "Server error
+  }
 ```
