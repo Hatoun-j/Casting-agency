@@ -108,21 +108,6 @@ class CastingAgencyTestCase(unittest.TestCase):
         # if the actor is deleted
         self.assertFalse(actors_total_before == actors_total_after)
         self.assertTrue(actors_total_before > actors_total_after)
-# One test for error behavior of DELETE Actor
-    def test_delete_actor_unauthorized(self):
-        """ Test delete actor failure """
-        # get response data
-        response = self.client().delete('/actors/' + format(100),
-                                        headers=self.casting_assistant)
-
-        # check success value, status_code
-        data = json.loads(response.data)
-
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(data['error'])
-        self.assertEqual(data['message'], 'Bad Request, please check your inputs')
-        self.assertEqual(data['success'], False)
-
 
 
 # ONE Success for DELETE movie end point
@@ -160,15 +145,7 @@ class CastingAgencyTestCase(unittest.TestCase):
         # 422 since the provided ID is wrong
         self.assertEqual(response.status_code, 422)
 
-    def test_delete_movie_unauthorized(self):
-        """ Test delete movie failure """
-        # get response data
-        response = self.client().delete('/movies/' + format(100),
-                                        headers=self.casting_director)
-
-        # Unauthorized since the casting_director
-        # doesn't have permission to delete an actor
-        self.assertEqual(response.status_code, 401)
+   
 
 # ONE Success for ADD Actor end point
     def test_create_new_actor_success(self):
